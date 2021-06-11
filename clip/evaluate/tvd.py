@@ -26,7 +26,7 @@ def get_text_probs_from_dataset(
         cls = DATASETS[name]
         ds = cls(os.path.expanduser("~/.cache"), download=True, train=train)
         if classes_path is None:
-            classes_path = f"../../clip/evaluate/{name.lower()}/{name.lower()}classes.json"
+            classes_path = f"../clip/evaluate/{name.lower()}/{name.lower()}classes.json"
         with open(classes_path, "r") as file:
             ds.classes = json.load(file)
     if text_descriptions is None:
