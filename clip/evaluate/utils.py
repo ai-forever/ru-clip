@@ -13,6 +13,20 @@ from torchvision.transforms import Compose, Resize, CenterCrop, ToTensor
 from clip.download_utils import download_file_from_hf
 
 
+MODELS = {
+    "ViT-B/32-small": {
+        "visual_encoder_name": "ViT-B/32",
+        "load": "ViT-B/32",
+        "load_huggingface": "sberbank-ai/rugpt3small_based_on_gpt2",
+        "visual_encoder_dim": 512,
+        "clip_projection_dim": 1024,
+        "eos_token_id": 2,
+        "hidden_size": 768,
+        "cpt_name": "ViT-B32-small.pt"
+    }
+}
+
+
 def prc_text(text):
     text = text.replace("\n", " ").replace("\t", " ")
     return " ".join(text.split())
@@ -81,20 +95,6 @@ def call_model(model, tokenizer, args, texts, images):
     return logits_per_image, logits_per_text
 
 
-MODELS = {
-    "ViT-B/32-small": {
-        "visual_encoder_name": "ViT-B/32",
-        "load": "ViT-B/32",
-        "load_huggingface": "sberbank-ai/rugpt3small_based_on_gpt2",
-        "visual_encoder_dim": 1024,
-        "clip_projection_dim": 1024,
-        "eos_token_id": 2,
-        "hidden_size": 768,
-        "cpt_name": "ViT-B32-small.pt"
-    }
-}
-
-
 def load_weights_only(
         pretrained_model_name_or_path="ViT-B/32-small",
         cpu=False,
@@ -135,16 +135,6 @@ def _load_weights_only(args):
     checkpoint_name = download_file_from_hf(args.cpt_name)
 
     sd = torch.load(checkpoint_name, map_location='cpu')
-
-    # Model.
-    if "model" in sd:
-        sd = sd["model"]
-    elif "module" in sd:
-        sd = sd["module"]
-    else:
-        print('A metadata file exists but unable to load model '
-              'from checkpoint {}, exiting'.format(checkpoint_name))
-        return
     model.load_state_dict(sd)
     args.img_transform = img_transform
     return model, args
