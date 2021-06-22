@@ -10,6 +10,7 @@ from PIL import Image
 import numpy as np
 from collections import Counter
 from torchvision.transforms import Compose, Resize, CenterCrop, ToTensor
+from clip.download_utils import download_file_from_hf
 
 
 def prc_text(text):
@@ -80,53 +81,27 @@ def call_model(model, tokenizer, args, texts, images):
     return logits_per_image, logits_per_text
 
 
-def get_checkpoint_tracker_filename(checkpoints_path):
-    return os.path.join(checkpoints_path, 'latest_checkpointed_iteration.txt')
-
-
-def get_checkpoint_iteration(args):
-    # Read the tracker file and set the iteration.
-    if args.load_tag:
-        return int(args.load_tag), False, True
-    tracker_filename = get_checkpoint_tracker_filename(args.load)
-    if not os.path.isfile(tracker_filename):
-        print('WARNING: could not find the metadata file {} '.format(
-            tracker_filename))
-        print('will not load any checkpoints and will start from random')
-        return 0, False, False
-    iteration = 0
-    release = False
-    with open(tracker_filename, 'r') as f:
-        metastring = f.read().strip()
-        try:
-            iteration = int(metastring)
-        except ValueError:
-            release = metastring == 'release'
-            if not release:
-                print('ERROR: Invalid metadata file {}. Exiting'.format(tracker_filename))
-
-    assert iteration > 0 or release, 'error parsing metadata file {}'.format(
-        tracker_filename)
-
-    return iteration, release, True
+MODELS = {
+    "ViT-B/32-small": {
+        "visual_encoder_name": "ViT-B/32",
+        "load": "ViT-B/32",
+        "load_huggingface": "sberbank-ai/rugpt3small_based_on_gpt2",
+        "visual_encoder_dim": 1024,
+        "clip_projection_dim": 1024,
+        "eos_token_id": 2,
+        "hidden_size": 768,
+        "cpt_name": "ViT-B32-small.pt"
+    }
+}
 
 
 def load_weights_only(
-        load,
-        visual_encoder_name="RN50",
-        load_huggingface="/home/jovyan/dalle/models/rugpt3small",
-        visual_encoder_dim=1024,
-        clip_projection_dim=1024,
-        eos_token_id=2,
-        hidden_size=768,
+        pretrained_model_name_or_path="ViT-B/32-small",
         cpu=False,
-        seq_length=128,
-        iteration=None
+        seq_length=128
 ):
-    load_tag = False
-    no_load_optim = True
-    no_load_rng = True
     vals = locals()
+    vals.update(MODELS[pretrained_model_name_or_path])
 
     class Args(object):
         def __init__(self, args):
@@ -134,10 +109,10 @@ def load_weights_only(
                 setattr(self, k, v)
             self.img_transform = None
 
-    return _load_weights_only(Args(vals), iteration=iteration)
+    return _load_weights_only(Args(vals))
 
 
-def _load_weights_only(args, iteration=None):
+def _load_weights_only(args):
     visual_model, img_transform = load(args.visual_encoder_name, jit=False)
     text_model = GPT2Model.from_pretrained(args.load_huggingface)
     visual_encoder = VisualEncoder(
@@ -156,11 +131,8 @@ def _load_weights_only(args, iteration=None):
         text_encoder=text_encoder,
         img_transform=img_transform
     )
-    if iteration is None:
-        iteration, release, success = get_checkpoint_iteration(args)
-    d = '{}'.format(iteration)
 
-    checkpoint_name = os.path.join(args.load, d, 'mp_rank_{:02d}_model_states.pt'.format(0))
+    checkpoint_name = download_file_from_hf(args.cpt_name)
 
     sd = torch.load(checkpoint_name, map_location='cpu')
 
