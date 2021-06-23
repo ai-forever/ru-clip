@@ -23,4 +23,4 @@ See [here](examples/Interacting_with_CLIP_ViT_B_32.ipynb), [![here](https://cola
 ## How it works
 Habr post coming soon 
 
-![](https://habrastorage.org/webt/et/20/vc/et20vcw-ikbfu_1tfyltdnvxsxk.png)
+![](https://habrastorage.org/webt/et/20/vc/et20vcw-ikbfu_1tfyltdnvxsxk.png) 
