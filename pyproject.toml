@@ -10,8 +10,9 @@ torch = "1.7.1"
 torchvision = "0.8.2"
 ftfy = "^6.0.3"
 regex = "^2021.8.28"
-transformers = "3.5.1"
 pymorphy2 = "^0.9.1"
+transformers = "^4.10.2"
+scikit-image = "^0.18.3"
 
 [tool.poetry.dev-dependencies]
 
