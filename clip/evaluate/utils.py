@@ -2,7 +2,7 @@ import torch
 from transformers import GPT2Tokenizer
 import json
 from pymorphy2 import MorphAnalyzer
-from clip.model import get_image_batch, GPT2Model, load, VisualEncoder, TextEncoder, CLIP
+from clip.model import get_image_batch, GPT2Model, GPT2Config, load, VisualEncoder, TextEncoder, CLIP
 import os
 import skimage
 import matplotlib.pyplot as plt
@@ -114,7 +114,8 @@ def load_weights_only(
 
 def _load_weights_only(args):
     visual_model, img_transform = load(args.visual_encoder_name, jit=False)
-    text_model = GPT2Model.from_pretrained(args.load_huggingface)
+    text_config = GPT2Config.from_pretrained(args.load_huggingface)
+    text_model = GPT2Model(text_config)
     visual_encoder = VisualEncoder(
         model=visual_model.visual,
         d_in=args.visual_encoder_dim,
