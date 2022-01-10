@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import torch
 from torch import nn
 import numpy as np
@@ -116,7 +117,7 @@ def get_image_batch(img_paths, img_transform, args):
             image = path
         else:
             image = Image.open(path)
-        image = image.convert("RGB")
+        image = image.convert('RGB')
         image = img_transform(image)
         images.append(image)
     images = torch.tensor(np.stack(images))

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 
 from transformers.file_utils import (
@@ -12,7 +13,7 @@ logger = logging.get_logger(__name__)
 
 
 def download_file_from_hf(file_name: str) -> str:
-    pretrained_model_name_or_path = "sberbank-ai/ru-clip"
+    pretrained_model_name_or_path = 'sberbank-ai/ru-clip'
     # Load model
     if pretrained_model_name_or_path is not None:
         if os.path.isdir(pretrained_model_name_or_path):
@@ -21,7 +22,7 @@ def download_file_from_hf(file_name: str) -> str:
                 archive_file = os.path.join(pretrained_model_name_or_path, file_name)
             else:
                 raise EnvironmentError(
-                    "Error no file named {} found in directory {}".format(
+                    'Error no file named {} found in directory {}'.format(
                         file_name,
                         pretrained_model_name_or_path,
                     )
@@ -53,14 +54,14 @@ def download_file_from_hf(file_name: str) -> str:
                 f"- '{pretrained_model_name_or_path}' is a correct model identifier listed on"
                 f"'https://huggingface.co/models'\n\n"
                 f"- or '{pretrained_model_name_or_path}' is the correct path to a directory containing a"
-                f"file named one of {file_name}.\n\n"
+                f'file named one of {file_name}.\n\n'
             )
             raise EnvironmentError(msg)
 
         if resolved_archive_file == archive_file:
-            logger.info("loading weights file {}".format(archive_file))
+            logger.info('loading weights file {}'.format(archive_file))
         else:
-            logger.info("loading weights file {} from cache at {}".format(archive_file, resolved_archive_file))
+            logger.info('loading weights file {} from cache at {}'.format(archive_file, resolved_archive_file))
     else:
         resolved_archive_file = None
 

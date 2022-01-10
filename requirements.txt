@@ -1,0 +1,5 @@
+torch
+torchvision
+huggingface_hub==0.2.1
+youtokentome~=1.0.6
+more_itertools==8.12.0
