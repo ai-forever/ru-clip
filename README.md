@@ -21,7 +21,7 @@ multimodal learning. This repo has the prototypes model of OpenAI CLIP's Russian
 # Installing
 
 ```
-pip install ruclip==0.0.1
+pip install ruclip==0.0.1rc7
 ```
 
 # Usage
