@@ -34,7 +34,7 @@ pip install ruclip==0.0.1rc7
 import ruclip
 
 device = 'cuda'
-clip, processor = ruclip.load('ruclip-vit-large-patch14-224', device=device)
+clip, processor = ruclip.load('ruclip-vit-base-patch32-384', device=device)
 ```
 
 ### Zero-Shot Classification [Minimal Example]
