@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from collections import OrderedDict
 from typing import Tuple, Union
 
@@ -32,9 +33,9 @@ class Bottleneck(nn.Module):
         if stride > 1 or inplanes != planes * Bottleneck.expansion:
             # downsampling layer is prepended with an avgpool, and the subsequent convolution has stride 1
             self.downsample = nn.Sequential(OrderedDict([
-                ("-1", nn.AvgPool2d(stride)),
-                ("0", nn.Conv2d(inplanes, planes * self.expansion, 1, stride=1, bias=False)),
-                ("1", nn.BatchNorm2d(planes * self.expansion))
+                ('-1', nn.AvgPool2d(stride)),
+                ('0', nn.Conv2d(inplanes, planes * self.expansion, 1, stride=1, bias=False)),
+                ('1', nn.BatchNorm2d(planes * self.expansion))
             ]))
 
     def forward(self, x: torch.Tensor):
@@ -171,9 +172,9 @@ class ResidualAttentionBlock(nn.Module):
         self.attn = nn.MultiheadAttention(d_model, n_head)
         self.ln_1 = LayerNorm(d_model)
         self.mlp = nn.Sequential(OrderedDict([
-            ("c_fc", nn.Linear(d_model, d_model * 4)),
-            ("gelu", QuickGELU()),
-            ("c_proj", nn.Linear(d_model * 4, d_model))
+            ('c_fc', nn.Linear(d_model, d_model * 4)),
+            ('gelu', QuickGELU()),
+            ('c_proj', nn.Linear(d_model * 4, d_model))
         ]))
         self.ln_2 = LayerNorm(d_model)
         self.attn_mask = attn_mask
@@ -221,7 +222,7 @@ class VisualTransformer(nn.Module):
         x = self.conv1(x)  # shape = [*, width, grid, grid]
         x = x.reshape(x.shape[0], x.shape[1], -1)  # shape = [*, width, grid ** 2]
         x = x.permute(0, 2, 1)  # shape = [*, grid ** 2, width]
-        x = torch.cat([self.class_embedding.to(x.dtype) + torch.zeros(x.shape[0], 1, x.shape[-1], dtype=x.dtype, device=x.device), x], dim=1)  # shape = [*, grid ** 2 + 1, width]
+        x = torch.cat([self.class_embedding.to(x.dtype) + torch.zeros(x.shape[0], 1, x.shape[-1], dtype=x.dtype, device=x.device), x], dim=1)  # shape = [*, grid ** 2 + 1, width] # noqa
         x = x + self.positional_embedding.to(x.dtype)
         x = self.ln_pre(x)
 
@@ -307,7 +308,7 @@ class CLIP(nn.Module):
 
             for resnet_block in [self.visual.layer1, self.visual.layer2, self.visual.layer3, self.visual.layer4]:
                 for name, param in resnet_block.named_parameters():
-                    if name.endswith("bn3.weight"):
+                    if name.endswith('bn3.weight'):
                         nn.init.zeros_(param)
 
         proj_std = (self.transformer.width ** -0.5) * ((2 * self.transformer.layers) ** -0.5)
@@ -326,7 +327,7 @@ class CLIP(nn.Module):
         # lazily create causal attention mask, with full attention between the vision tokens
         # pytorch uses additive attention mask; fill with -inf
         mask = torch.empty(self.context_length, self.context_length)
-        mask.fill_(float("-inf"))
+        mask.fill_(float('-inf'))
         mask.triu_(1)  # zero out the lower diagonal
         return mask
 
@@ -372,19 +373,19 @@ class CLIP(nn.Module):
 def convert_weights(model: nn.Module):
     """Convert applicable model parameters to fp16"""
 
-    def _convert_weights_to_fp16(l):
+    def _convert_weights_to_fp16(l):  # noqa
         if isinstance(l, (nn.Conv1d, nn.Conv2d, nn.Linear)):
             l.weight.data = l.weight.data.half()
             if l.bias is not None:
                 l.bias.data = l.bias.data.half()
 
         if isinstance(l, nn.MultiheadAttention):
-            for attr in [*[f"{s}_proj_weight" for s in ["in", "q", "k", "v"]], "in_proj_bias", "bias_k", "bias_v"]:
+            for attr in [*[f'{s}_proj_weight' for s in ['in', 'q', 'k', 'v']], 'in_proj_bias', 'bias_k', 'bias_v']:
                 tensor = getattr(l, attr)
                 if tensor is not None:
                     tensor.data = tensor.data.half()
 
-        for name in ["text_projection", "proj"]:
+        for name in ['text_projection', 'proj']:
             if hasattr(l, name):
                 attr = getattr(l, name)
                 if attr is not None:
@@ -394,29 +395,31 @@ def convert_weights(model: nn.Module):
 
 
 def build_model(state_dict: dict):
-    vit = "visual.proj" in state_dict
+    vit = 'visual.proj' in state_dict
 
     if vit:
-        vision_width = state_dict["visual.conv1.weight"].shape[0]
-        vision_layers = len([k for k in state_dict.keys() if k.startswith("visual.") and k.endswith(".attn.in_proj_weight")])
-        vision_patch_size = state_dict["visual.conv1.weight"].shape[-1]
-        grid_size = round((state_dict["visual.positional_embedding"].shape[0] - 1) ** 0.5)
+        vision_width = state_dict['visual.conv1.weight'].shape[0]
+        vision_layers = len([k for k in state_dict.keys() if k.startswith(
+            'visual.') and k.endswith('.attn.in_proj_weight')])
+        vision_patch_size = state_dict['visual.conv1.weight'].shape[-1]
+        grid_size = round((state_dict['visual.positional_embedding'].shape[0] - 1) ** 0.5)
         image_resolution = vision_patch_size * grid_size
     else:
-        counts: list = [len(set(k.split(".")[2] for k in state_dict if k.startswith(f"visual.layer{b}"))) for b in [1, 2, 3, 4]]
+        counts: list = [len(set(k.split('.')[2]
+                                for k in state_dict if k.startswith(f'visual.layer{b}'))) for b in [1, 2, 3, 4]]
         vision_layers = tuple(counts)
-        vision_width = state_dict["visual.layer1.0.conv1.weight"].shape[0]
-        output_width = round((state_dict["visual.attnpool.positional_embedding"].shape[0] - 1) ** 0.5)
+        vision_width = state_dict['visual.layer1.0.conv1.weight'].shape[0]
+        output_width = round((state_dict['visual.attnpool.positional_embedding'].shape[0] - 1) ** 0.5)
         vision_patch_size = None
-        assert output_width ** 2 + 1 == state_dict["visual.attnpool.positional_embedding"].shape[0]
+        assert output_width ** 2 + 1 == state_dict['visual.attnpool.positional_embedding'].shape[0]
         image_resolution = output_width * 32
 
-    embed_dim = state_dict["text_projection"].shape[1]
-    context_length = state_dict["positional_embedding"].shape[0]
-    vocab_size = state_dict["token_embedding.weight"].shape[0]
-    transformer_width = state_dict["ln_final.weight"].shape[0]
+    embed_dim = state_dict['text_projection'].shape[1]
+    context_length = state_dict['positional_embedding'].shape[0]
+    vocab_size = state_dict['token_embedding.weight'].shape[0]
+    transformer_width = state_dict['ln_final.weight'].shape[0]
     transformer_heads = transformer_width // 64
-    transformer_layers = len(set(k.split(".")[2] for k in state_dict if k.startswith(f"transformer.resblocks")))
+    transformer_layers = len(set(k.split('.')[2] for k in state_dict if k.startswith(f'transformer.resblocks')))  # noqa
 
     model = CLIP(
         embed_dim,
@@ -424,7 +427,7 @@ def build_model(state_dict: dict):
         context_length, vocab_size, transformer_width, transformer_heads, transformer_layers
     )
 
-    for key in ["input_resolution", "context_length", "vocab_size"]:
+    for key in ['input_resolution', 'context_length', 'vocab_size']:
         if key in state_dict:
             del state_dict[key]
 

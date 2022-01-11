@@ -1,26 +1,139 @@
-# ru-clip
-### First multimodal model for Russian language
+# RuCLIP
 
-**ru-clip** is a multimodal model for obtaining images and text similarities + rearranging captions and images.
+Zero-shot image classification model for Russian language
 
-**ru-clip** (Russian Contrastive Language–Image Pre-training) builds on a large body of work on zero-shot transfer, natural language supervision, and multimodal learning. The idea of zero-data learning dates back over a decade but until recently was mostly studied in computer vision as a way of generalizing to unseen object categories. 
+---
 
-We show that the continuation of work on the pre-trained language models [ru-gpts](https://github.com/sberbank-ai/ru-gpts) with the addition of a new modality - images - is able to make the system stable and generalize complex categories beyond standard samples.
-![](https://habrastorage.org/webt/b4/fu/94/b4fu94nng6kzzedavmkawz3hasu.png)
+**RuCLIP** (**Ru**ssian **C**ontrastive **L**anguage–**I**mage **P**retraining) is a multimodal model
+for obtaining images and text similarities and rearranging captions and pictures.
+RuCLIP builds on a large body of work on zero-shot transfer, computer vision, natural language processing and
+multimodal learning. This repo has the prototypes model of OpenAI CLIP's Russian version following [this paper](https://arxiv.org/abs/2103.00020).
 
-**Note! This is the prototype model of OpenAI CLIP's Russian version following this [paper](https://arxiv.org/abs/2103.00020).**
+# Models
 
-## Model description
-We use ViT-B/32 Image Encoder and RuGPT3Small Text Encoder.
++ [ruclip-vit-base-patch32-224](https://huggingface.co/sberbank-ai/ruclip-vit-base-patch32-224) 🤗
++ [ruclip-vit-base-patch16-224](https://huggingface.co/sberbank-ai/ruclip-vit-base-patch16-224) 🤗
++ [ruclip-vit-large-patch14-224](https://huggingface.co/sberbank-ai/ruclip-vit-large-patch14-224) 🤗
++ [ruclip-vit-base-patch32-384](https://huggingface.co/sberbank-ai/ruclip-vit-base-patch32-384) 🤗
++ ruclip-vit-large-patch14-336  ☁️[SberCloud only](https://sbercloud.ru/ru/ai-services)
++ ruclip-vit-base-patch16-384 ☁️[SberCloud only](https://sbercloud.ru/ru/ai-services) ️
 
-🤗 See HF model cards:
- - [ru-clip](https://huggingface.co/sberbank-ai/ru-clip)
- - [ruGPT-3 small](https://huggingface.co/sberbank-ai/rugpt3small_based_on_gpt2)
+# Installing
 
-## Usage
-See [here](examples/Interacting_with_CLIP_ViT_B_32.ipynb), [![here](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-clip/blob/main/examples/Interacting_with_CLIP_ViT_B_32.ipynb).
+```
+pip install ruclip==0.0.1rc7
+```
 
-## How it works
-Habr post coming soon 
+# Usage
 
-![](https://habrastorage.org/webt/et/20/vc/et20vcw-ikbfu_1tfyltdnvxsxk.png) 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1vXu3s0rcAOEAciz7B3vmVHd4J_gUJnk9?usp=sharing)
+
+### Init models
+
+```python
+import ruclip
+
+device = 'cuda'
+clip, processor = ruclip.load('ruclip-vit-large-patch14-224', device=device)
+```
+
+### Zero-Shot Classification [Minimal Example]
+
+```python
+import torch
+import base64
+import requests
+from PIL import Image
+from io import BytesIO
+
+# prepare images
+bs4_urls = requests.get('https://raw.githubusercontent.com/sberbank-ai/ru-dolph/master/pics/pipelines/cats_vs_dogs_bs4.json').json()
+images = [Image.open(BytesIO(base64.b64decode(bs4_url))) for bs4_url in bs4_urls]
+
+# prepare classes
+classes = ['кошка', 'собака']
+templates = ['{}', 'это {}', 'на картинке {}', 'это {}, домашнее животное']
+
+# predict
+predictor = ruclip.Predictor(clip, processor, device, bs=8, templates=templates)
+with torch.no_grad():
+    text_latents = predictor.get_text_latents(classes)
+    pred_labels = predictor.run(images, text_latents)
+
+# show results
+f, ax = plt.subplots(2,4, figsize=(12,6))
+for i, (pil_img, pred_label) in enumerate(zip(images, pred_labels)):
+    ax[i//4, i%4].imshow(pil_img)
+    ax[i//4, i%4].set_title(classes[pred_label])
+```
+
+![](./pics/cats_vs_dogs.png)
+
+### Cosine similarity Visualization Example
+
+![](./pics/cosine_example.png)
+
+### Softmax Scores Visualization Example
+
+![](./pics/softmax_example.png)
+
+### Linear Probe Example
+
+```python
+train = CIFAR100(root, download=True, train=True)
+test = CIFAR100(root, download=True, train=False)
+
+with torch.no_grad():
+    X_train = predictor.get_image_latents((pil_img for pil_img, _ in train)).cpu().numpy()
+    X_test = predictor.get_image_latents((pil_img for pil_img, _ in test)).cpu().numpy()
+    y_train, y_test = np.array(train.targets), np.array(test.targets)
+
+clf = LogisticRegression(solver='lbfgs', penalty='l2', max_iter=1000, verbose=1)
+clf.fit(X_train, y_train)
+y_pred = clf.predict(X_test)
+accuracy = np.mean((y_test == y_pred).astype(np.float)) * 100.
+print(f"Accuracy = {accuracy:.3f}")
+```
+
+`>>> Accuracy = 75.680`
+
+# Performance
+
+We have evaluated the performance zero-shot image classification on the following datasets:
+
+
+| Dataset                       | [ruclip-vit-base-patch32-224](https://huggingface.co/sberbank-ai/ruclip-vit-base-patch32-224) | [ruclip-vit-base-patch16-224](https://huggingface.co/sberbank-ai/ruclip-vit-base-patch16-224) | [ruclip-vit-large-patch14-224](https://huggingface.co/sberbank-ai/ruclip-vit-large-patch14-224) | [ruclip-vit-base-patch32-384](https://huggingface.co/sberbank-ai/ruclip-vit-base-patch32-384) | ruclip-vit-large-patch14-336 ☁️[SberCloud only](https://sbercloud.ru/ru/ai-services) | ruclip-vit-base-patch16-384 ☁️[SberCloud only](https://sbercloud.ru/ru/ai-services) |
+| :------------------------------ | :---------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------ | :---------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Food101, acc                  | 0.505                                                                                         | 0.552                                                                                         | 0.597                                                                                           | 0.642                                                                                         | ***0.712*** 💥                                                                         | 0.689                                                                                 |
+| CIFAR10, acc                  | 0.818                                                                                         | 0.810                                                                                         | 0.878                                                                                           | 0.862                                                                                         | **0.906** 💥                                                                           | 0.845                                                                                 |
+| CIFAR100, acc                 | 0.504                                                                                         | 0.496                                                                                         | 0.511                                                                                           | 0.529                                                                                         | **0.591** 💥                                                                           | 0.569                                                                                 |
+| Birdsnap, acc                 | 0.115                                                                                         | 0.117                                                                                         | 0.172                                                                                           | 0.161                                                                                         | **0.213** 💥                                                                           | 0.195                                                                                 |
+| SUN397, acc                   | 0.452                                                                                         | 0.462                                                                                         | 0.484                                                                                           | 0.510                                                                                         | **0.523** 💥                                                                           | 0.521                                                                                 |
+| Stanford Cars, acc            | 0.433                                                                                         | 0.487                                                                                         | 0.559                                                                                           | 0.572                                                                                         | **0.659** 💥                                                                           | 0.626                                                                                 |
+| DTD, acc                      | 0.380                                                                                         | 0.401                                                                                         | 0.370                                                                                           | 0.390                                                                                         | 0.408                                                                                  | **0.421** 💥                                                                          |
+| MNIST, acc                    | 0.447                                                                                         | 0.464                                                                                         | 0.337                                                                                           | 0.404                                                                                         | 0.242                                                                                  | **0.478** 💥                                                                          |
+| STL10, acc                    | 0.932                                                                                         | 0.932                                                                                         | 0.934                                                                                           | 0.946                                                                                         | 0.956                                                                                  | **0.964** 💥                                                                          |
+| PCam, acc                     | 0.501                                                                                         | 0.505                                                                                         | 0.520                                                                                           | 0.506                                                                                         | **0.554** 💥                                                                           | 0.501                                                                                 |
+| CLEVR, acc                    | 0.148                                                                                         | 0.128                                                                                         | 0.152                                                                                           | **0.188** 💥                                                                                  | 0.142                                                                                  | 0.132                                                                                 |
+| Rendered SST2, acc            | 0.489                                                                                         | 0.527                                                                                         | 0.529                                                                                           | 0.508                                                                                         | **0.539** 💥                                                                           | 0.525                                                                                 |
+| ImageNet, acc                 | 0.375                                                                                         | 0.401                                                                                         | 0.426                                                                                           | 0.451                                                                                         | **0.488** 💥                                                                           | 0.482                                                                                 |
+| FGVC Aircraft, mean-per-class | 0.033                                                                                         | 0.043                                                                                         | 0.046                                                                                           | 0.053                                                                                         | **0.075** 💥                                                                           | 0.046                                                                                 |
+| Oxford Pets, mean-per-class   | 0.560                                                                                         | 0.595                                                                                         | 0.604                                                                                           | 0.587                                                                                         | 0.546                                                                                  | **0.635** 💥                                                                          |
+| Caltech101, mean-per-class    | 0.786                                                                                         | 0.775                                                                                         | 0.777                                                                                           | 0.834                                                                                         | **0.835** 💥                                                                           | **0.835** 💥                                                                          |
+| Flowers102, mean-per-class    | 0.401                                                                                         | 0.388                                                                                         | 0.455                                                                                           | 0.449                                                                                         | **0.517** 💥                                                                           | 0.452                                                                                 |
+| Hateful Memes, roc-auc        | **0.564** 💥                                                                                  | 0.516                                                                                         | 0.530                                                                                           | 0.537                                                                                         | 0.519                                                                                  | 0.543                                                                                 |
+
+# Authors
+
++ Alex Shonenkov: [Github](https://github.com/shonenkov), [Kaggle GM](https://www.kaggle.com/shonenkov)
++ Daniil Chesakov: [Github](https://github.com/Danyache)
++ Denis Dimitrov: [Github](https://github.com/denndimitrov)
++ Igor Pavlov: [Github](https://github.com/boomb0om)
+
+# Supported by
+
+[<img src="https://raw.githubusercontent.com/sberbank-ai/ru-dolph/master/pics/logo/sberai-logo.png" height="115"/>](https://github.com/sberbank-ai) \
+[<img src="https://raw.githubusercontent.com/sberbank-ai/ru-dolph/master/pics/logo/sberdevices-logo.png" height="40"/>](https://sberdevices.ru)
+
+[<img src="https://raw.githubusercontent.com/sberbank-ai/ru-dolph/master/pics/logo/sbercloud-logo.png" height="80"/>](https://sbercloud.ru/) \
+[<img src="https://raw.githubusercontent.com/sberbank-ai/ru-dolph/master/pics/logo/airi-logo.png" height="50"/>](https://airi.net)
