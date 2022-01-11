@@ -76,6 +76,25 @@ for i, (pil_img, pred_label) in enumerate(zip(images, pred_labels)):
 
 ![](./pics/softmax_example.png)
 
+
+### Linear Probe Example
+```python
+train = CIFAR100(root, download=True, train=True)
+test = CIFAR100(root, download=True, train=False)
+
+with torch.no_grad():
+    X_train = predictor.get_image_latents((pil_img for pil_img, _ in train)).cpu().numpy()
+    X_test = predictor.get_image_latents((pil_img for pil_img, _ in test)).cpu().numpy()
+    y_train, y_test = np.array(train.targets), np.array(test.targets)
+
+clf = LogisticRegression(solver='lbfgs', penalty='l2', max_iter=1000, verbose=1)
+clf.fit(X_train, y_train)
+y_pred = clf.predict(X_test)
+accuracy = np.mean((y_test == y_pred).astype(np.float)) * 100.
+print(f"Accuracy = {accuracy:.3f}")
+```
+`>>> Accuracy = 75.680`
+
 # Performance
 
 We have evaluated the performance zero-shot image classification on the following datasets:
