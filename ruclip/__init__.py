@@ -39,6 +39,18 @@ MODELS = {
             'bpe.model', 'config.json', 'pytorch_model.bin'
         ]
     ),
+    'ruclip-vit-base-patch16-384': dict(
+        repo_id='sberbank-ai/ruclip-vit-base-patch16-384',
+        filenames=[
+            'bpe.model', 'config.json', 'pytorch_model.bin'
+        ]
+    ),
+    'ruclip-vit-large-patch14-384': dict(
+        repo_id='sberbank-ai/ruclip-vit-large-patch14-384',
+        filenames=[
+            'bpe.model', 'config.json', 'pytorch_model.bin'
+        ]
+    ),
 }
 
 
