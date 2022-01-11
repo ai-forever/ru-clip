@@ -27,7 +27,7 @@ pip install ruclip==0.0.1
 
 # Usage 
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)]()
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1vXu3s0rcAOEAciz7B3vmVHd4J_gUJnk9?usp=sharing)
 
 ### Init models
 ```python
