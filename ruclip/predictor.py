@@ -5,12 +5,13 @@ from tqdm import tqdm
 
 
 class Predictor:
-    def __init__(self, clip_model, clip_processor, device, templates=None, bs=8):
+    def __init__(self, clip_model, clip_processor, device, templates=None, bs=8, quiet=False):
         self.device = device
         self.clip_model = clip_model.to(self.device)
         self.clip_model.eval()
         self.clip_processor = clip_processor
         self.bs = bs
+        self.quiet = quiet
         self.templates = templates or [
             '{}',
             'фото, на котором изображено {}',
@@ -34,8 +35,9 @@ class Predictor:
         return text_latents
 
     def run(self, images, text_latents):
+        if not self.quiet:
+            pbar = tqdm()
         labels = []
-        pbar = tqdm()
         logit_scale = self.clip_model.logit_scale.exp()
         for pil_images in more_itertools.chunked(images, self.bs):
             inputs = self.clip_processor(text='', images=list(pil_images), return_tensors='pt', padding=True)
@@ -43,18 +45,21 @@ class Predictor:
             image_latents = image_latents / image_latents.norm(dim=-1, keepdim=True)
             logits_per_text = torch.matmul(text_latents.to(self.device), image_latents.t()) * logit_scale
             _labels = logits_per_text.argmax(0).cpu().numpy().tolist()
-            pbar.update(len(_labels))
+            if not self.quiet:
+                pbar.update(len(_labels))
             labels.extend(_labels)
         pbar.close()
         return labels
 
     def get_image_latents(self, images):
-        pbar = tqdm()
+        if not self.quiet:
+            pbar = tqdm()
         image_latents = []
         for pil_images in more_itertools.chunked(images, self.bs):
             inputs = self.clip_processor(text='', images=list(pil_images), return_tensors='pt', padding=True)
             image_latents.append(self.clip_model.encode_image(inputs['pixel_values'].to(self.device)))
-            pbar.update(len(pil_images))
+            if not self.quiet:
+                pbar.update(len(pil_images))
         image_latents = torch.cat(image_latents)
         image_latents = image_latents / image_latents.norm(dim=-1, keepdim=True)
         return image_latents
