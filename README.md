@@ -131,7 +131,7 @@ Also, we have created speed comparison based on CIFAR100 dataset using Nvidia-V1
 
 |          | ruclip-vit-base-patch32-224 | ruclip-vit-base-patch16-224 | ruclip-vit-large-patch14-224 | ruclip-vit-base-patch32-384 | ruclip-vit-large-patch14-336 | ruclip-vit-base-patch16-384 |
 |----------|-----------------------------|-----------------------------|------------------------------|-----------------------------|------------------------------|-----------------------------|
-| iter/sec | 308.84                      | 155.35                      | 49.95                        | 147.26                      | 22.11                        | 61.79                       |
+| iter/sec | **308.84** 💥                  | 155.35                      | 49.95                        | 147.26                      | 22.11                        | 61.79                       |
 
 # Authors
 
