@@ -123,6 +123,16 @@ We have evaluated the performance zero-shot image classification on the followin
 | Flowers102, mean-per-class    | 0.401                                                                                         | 0.388                                                                                         | 0.455                                                                                           | 0.449                                                                                         | **0.517** 💥                                                                           | 0.452                                                                                 |
 | Hateful Memes, roc-auc        | **0.564** 💥                                                                                  | 0.516                                                                                         | 0.530                                                                                           | 0.537                                                                                         | 0.519                                                                                  | 0.543                                                                                 |
 
+And for linear-prob evaluation:
+
+
+
+Also, we have created speed comparison based on CIFAR100 dataset using Nvidia-V100 for evaluation:
+
+|          | ruclip-vit-base-patch32-224 | ruclip-vit-base-patch16-224 | ruclip-vit-large-patch14-224 | ruclip-vit-base-patch32-384 | ruclip-vit-large-patch14-336 | ruclip-vit-base-patch16-384 |
+|----------|-----------------------------|-----------------------------|------------------------------|-----------------------------|------------------------------|-----------------------------|
+| iter/sec | 308.84                      | 155.35                      | 49.95                        | 147.26                      | 22.11                        | 61.79                       |
+
 # Authors
 
 + Alex Shonenkov: [Github](https://github.com/shonenkov), [Kaggle GM](https://www.kaggle.com/shonenkov)
