@@ -129,6 +129,7 @@ We have evaluated the performance zero-shot image classification on the followin
 + Daniil Chesakov: [Github](https://github.com/Danyache)
 + Denis Dimitrov: [Github](https://github.com/denndimitrov)
 + Igor Pavlov: [Github](https://github.com/boomb0om)
++ Andrey Kuznetsov: [Github](https://github.com/kuznetsoffandrey)
 
 # Supported by
 
