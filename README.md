@@ -77,7 +77,7 @@ for i, (pil_img, pred_label) in enumerate(zip(images, pred_labels)):
 
 ![](./pics/softmax_example.png)
 
-### Linear Probe and ZeroShot Results
+### Linear Probe and ZeroShot Correlation Results
 
 ![](./pics/ruclip_large_336_corr.png)
 
