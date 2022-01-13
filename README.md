@@ -77,6 +77,10 @@ for i, (pil_img, pred_label) in enumerate(zip(images, pred_labels)):
 
 ![](./pics/softmax_example.png)
 
+### Linear Probe and ZeroShot Correlation Results
+
+![](./pics/ruclip_large_336_corr.png)
+
 ### Linear Probe Example
 
 ```python
@@ -122,6 +126,33 @@ We have evaluated the performance zero-shot image classification on the followin
 | Caltech101, mean-per-class    | 0.786                                                                                         | 0.775                                                                                         | 0.777                                                                                           | 0.834                                                                                         | **0.835** 💥                                                                           | **0.835** 💥                                                                          |
 | Flowers102, mean-per-class    | 0.401                                                                                         | 0.388                                                                                         | 0.455                                                                                           | 0.449                                                                                         | **0.517** 💥                                                                           | 0.452                                                                                 |
 | Hateful Memes, roc-auc        | **0.564** 💥                                                                                  | 0.516                                                                                         | 0.530                                                                                           | 0.537                                                                                         | 0.519                                                                                  | 0.543                                                                                 |
+
+And for linear-prob evaluation:
+
+|       Dataset | ruclip-vit-base-patch32-224 | ruclip-vit-base-patch16-224 | ruclip-vit-large-patch14-224 | ruclip-vit-base-patch32-384 | ruclip-vit-large-patch14-336 | ruclip-vit-base-patch16-384 |
+|--------------:|----------------------------:|----------------------------:|----------------------------:|----------------------------:|----------------------------:|----------------------------:|
+|       Food101 |                    0.765 |                    0.827 |                    0.840 |                    0.851 |                **0.896** 💥 |                    0.890 |
+|       CIFAR10 |                    0.917 |                    0.922 |                    0.927 |                    0.934 |                **0.943** 💥 |                    0.942 |
+|      CIFAR100 |                    0.716 |                    0.739 |                    0.734 |                    0.745 |                    0.770 |              **0.773** 💥 |
+|      Birdsnap |                    0.347 |                    0.503 |                    0.567 |                    0.434 |                    0.609 |              **0.612** 💥 |
+|        SUN397 |                    0.683 |                    0.721 |                    0.731 |                    0.721 |               **0.759** 💥 |                    0.758 |
+| Stanford Cars |                    0.697 |                    0.776 |                    0.797 |                    0.766 |                    0.831 |              **0.840** 💥 |
+|           DTD |                    0.690 |                    0.734 |                    0.711 |                    0.703 |                    0.731 |              **0.749** 💥 |
+|         MNIST |                    0.963 |             **0.974** 💥 |                    0.949 |                    0.965 |                    0.949 |                    0.971 |
+|         STL10 |                    0.957 |                    0.962 |                    0.973 |                    0.968 |               **0.981** 💥 |                    0.974 |
+|          PCam |                    0.827 |                    0.823 |                    0.791 |                    0.835 |                    0.807 |              **0.846** 💥 |
+|         CLEVR |                    0.356 |                    0.360 |                    0.358 |                    0.308 |                    0.318 |              **0.378** 💥 |
+| Rendered SST2 |                    0.603 |                    0.655 |                    0.651 |                    0.651 |                    0.637 |              **0.661** 💥 |
+| FGVC Aircraft |                    0.254 |                    0.312 |                    0.290 |                    0.283 |                    0.341 |              **0.362** 💥 |
+|   Oxford Pets |                    0.774 |                    0.820 |                    0.819 |                    0.730 |                    0.753 |              **0.856** 💥 |
+|    Caltech101 |                    0.904 |                    0.917 |                    0.914 |                    0.922 |               **0.937** 💥 |                    0.932 |
+|  HatefulMemes |                    0.545 |                    0.568 |                    0.563 |                    0.581 |               **0.585** 💥 |                    0.578 |
+
+Also, we have created speed comparison based on CIFAR100 dataset using Nvidia-V100 for evaluation:
+
+|          | ruclip-vit-base-patch32-224 | ruclip-vit-base-patch16-224 | ruclip-vit-large-patch14-224 | ruclip-vit-base-patch32-384 | ruclip-vit-large-patch14-336 | ruclip-vit-base-patch16-384 |
+|----------|-----------------------------|-----------------------------|------------------------------|-----------------------------|------------------------------|-----------------------------|
+| iter/sec | **308.84** 💥                  | 155.35                      | 49.95                        | 147.26                      | 22.11                        | 61.79                       |
 
 # Authors
 
