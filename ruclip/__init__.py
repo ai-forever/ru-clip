@@ -79,4 +79,4 @@ def load(name, device='cpu', cache_dir='/tmp/ruclip', use_auth_token=None):
 
 
 __all__ = ['processor', 'model', 'predictor', 'CLIP', 'RuCLIPProcessor', 'Predictor', 'MODELS', 'load']
-__version__ = '0.0.1rc7'
+__version__ = '0.0.1'
