@@ -171,3 +171,7 @@ Also, we have created speed comparison based on CIFAR100 dataset using Nvidia-V1
 
 [<img src="https://raw.githubusercontent.com/sberbank-ai/ru-dolph/master/pics/logo/sbercloud-logo.png" height="80"/>](https://sbercloud.ru/) \
 [<img src="https://raw.githubusercontent.com/sberbank-ai/ru-dolph/master/pics/logo/airi-logo.png" height="50"/>](https://airi.net)
+
+### Social Media
+
+[![](./pics/habr.svg)](https://habr.com/ru/company/sberbank/blog/646447/)
