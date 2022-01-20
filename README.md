@@ -43,6 +43,7 @@ clip, processor = ruclip.load('ruclip-vit-base-patch32-384', device=device)
 import torch
 import base64
 import requests
+import matplotlib.pyplot as plt
 from PIL import Image
 from io import BytesIO
 
