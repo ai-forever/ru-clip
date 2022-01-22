@@ -29,7 +29,7 @@ pip install ruclip==0.0.1
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1vXu3s0rcAOEAciz7B3vmVHd4J_gUJnk9?usp=sharing)
 Standart RuCLIP API
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Lednik7/CLIPONNX/blob/main/examples/RuCLIP_onnx_example.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Lednik7/CLIP-ONNX/blob/main/examples/RuCLIP_onnx_example.ipynb)
 ONNX example
 
 ### Init models
