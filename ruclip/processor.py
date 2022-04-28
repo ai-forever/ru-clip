@@ -31,8 +31,8 @@ class RuCLIPProcessor:
     def encode_text(self, text):
         text = text.lower()
         tokens = self.tokenizer.encode([text], output_type=yttm.OutputType.ID, dropout_prob=0.0)[0]
+        tokens = tokens[:self.text_seq_length-2]
         tokens = [self.bos_id] + tokens + [self.eos_id]
-        tokens = tokens[:self.text_seq_length]
         return self.prepare_tokens(tokens)
 
     def prepare_tokens(self, tokens):
