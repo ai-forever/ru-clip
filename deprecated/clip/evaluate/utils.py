@@ -18,7 +18,7 @@ MODELS = {
     'ViT-B/32-small': {
         'visual_encoder_name': 'ViT-B/32',
         'load': 'ViT-B/32',
-        'load_huggingface': 'sberbank-ai/rugpt3small_based_on_gpt2',
+        'load_huggingface': 'ai-forever/rugpt3small_based_on_gpt2',
         'visual_encoder_dim': 512,
         'clip_projection_dim': 1024,
         'eos_token_id': 2,
@@ -60,7 +60,7 @@ def get_text_batch(lines, tokenizer, args):
     return input_ids, attention_mask
 
 
-def get_tokenizer(pretrained_model_name='sberbank-ai/rugpt3small_based_on_gpt2'):
+def get_tokenizer(pretrained_model_name='ai-forever/rugpt3small_based_on_gpt2'):
     tokenizer = GPT2Tokenizer.from_pretrained(pretrained_model_name)
     add_tokens = tokenizer.add_special_tokens({'bos_token': '<s>'})
 
