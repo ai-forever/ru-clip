@@ -13,7 +13,7 @@ logger = logging.get_logger(__name__)
 
 
 def download_file_from_hf(file_name: str) -> str:
-    pretrained_model_name_or_path = 'sberbank-ai/ru-clip'
+    pretrained_model_name_or_path = 'ai-forever/ru-clip'
     # Load model
     if pretrained_model_name_or_path is not None:
         if os.path.isdir(pretrained_model_name_or_path):

@@ -10,37 +10,37 @@ from .predictor import Predictor
 
 MODELS = {
     'ruclip-vit-base-patch32-224': dict(
-        repo_id='sberbank-ai/ruclip-vit-base-patch32-224',
+        repo_id='ai-forever/ruclip-vit-base-patch32-224',
         filenames=[
             'bpe.model', 'config.json', 'pytorch_model.bin'
         ]
     ),
     'ruclip-vit-base-patch16-224': dict(
-        repo_id='sberbank-ai/ruclip-vit-base-patch16-224',
+        repo_id='ai-forever/ruclip-vit-base-patch16-224',
         filenames=[
             'bpe.model', 'config.json', 'pytorch_model.bin'
         ]
     ),
     'ruclip-vit-large-patch14-224': dict(
-        repo_id='sberbank-ai/ruclip-vit-large-patch14-224',
+        repo_id='ai-forever/ruclip-vit-large-patch14-224',
         filenames=[
             'bpe.model', 'config.json', 'pytorch_model.bin'
         ]
     ),
     'ruclip-vit-large-patch14-336': dict(
-        repo_id='sberbank-ai/ruclip-vit-large-patch14-336',
+        repo_id='ai-forever/ruclip-vit-large-patch14-336',
         filenames=[
             'bpe.model', 'config.json', 'pytorch_model.bin'
         ]
     ),
     'ruclip-vit-base-patch32-384': dict(
-        repo_id='sberbank-ai/ruclip-vit-base-patch32-384',
+        repo_id='ai-forever/ruclip-vit-base-patch32-384',
         filenames=[
             'bpe.model', 'config.json', 'pytorch_model.bin'
         ]
     ),
     'ruclip-vit-base-patch16-384': dict(
-        repo_id='sberbank-ai/ruclip-vit-base-patch16-384',
+        repo_id='ai-forever/ruclip-vit-base-patch16-384',
         filenames=[
             'bpe.model', 'config.json', 'pytorch_model.bin'
         ]
