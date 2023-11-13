@@ -11,12 +11,12 @@ multimodal learning. This repo has the prototypes model of OpenAI CLIP's Russian
 
 # Models
 
-+ [ruclip-vit-base-patch32-224](https://huggingface.co/sberbank-ai/ruclip-vit-base-patch32-224) 🤗
-+ [ruclip-vit-base-patch16-224](https://huggingface.co/sberbank-ai/ruclip-vit-base-patch16-224) 🤗
-+ [ruclip-vit-large-patch14-224](https://huggingface.co/sberbank-ai/ruclip-vit-large-patch14-224) 🤗
-+ [ruclip-vit-base-patch32-384](https://huggingface.co/sberbank-ai/ruclip-vit-base-patch32-384) 🤗
-+ [ruclip-vit-large-patch14-336](https://huggingface.co/sberbank-ai/ruclip-vit-large-patch14-336) 🤗
-+ [ruclip-vit-base-patch16-384](https://huggingface.co/sberbank-ai/ruclip-vit-base-patch16-384) 🤗
++ [ruclip-vit-base-patch32-224](https://huggingface.co/ai-forever/ruclip-vit-base-patch32-224) 🤗
++ [ruclip-vit-base-patch16-224](https://huggingface.co/ai-forever/ruclip-vit-base-patch16-224) 🤗
++ [ruclip-vit-large-patch14-224](https://huggingface.co/ai-forever/ruclip-vit-large-patch14-224) 🤗
++ [ruclip-vit-base-patch32-384](https://huggingface.co/ai-forever/ruclip-vit-base-patch32-384) 🤗
++ [ruclip-vit-large-patch14-336](https://huggingface.co/ai-forever/ruclip-vit-large-patch14-336) 🤗
++ [ruclip-vit-base-patch16-384](https://huggingface.co/ai-forever/ruclip-vit-base-patch16-384) 🤗
 
 # Installing
 
@@ -55,7 +55,7 @@ from PIL import Image
 from io import BytesIO
 
 # prepare images
-bs4_urls = requests.get('https://raw.githubusercontent.com/sberbank-ai/ru-dolph/master/pics/pipelines/cats_vs_dogs_bs4.json').json()
+bs4_urls = requests.get('https://raw.githubusercontent.com/ai-forever/ru-dolph/master/pics/pipelines/cats_vs_dogs_bs4.json').json()
 images = [Image.open(BytesIO(base64.b64decode(bs4_url))) for bs4_url in bs4_urls]
 
 # prepare classes
@@ -114,7 +114,7 @@ print(f"Accuracy = {accuracy:.3f}")
 We have evaluated the performance zero-shot image classification on the following datasets:
 
 
-| Dataset                       | [ruCLIP Base \[vit-base-patch32-224\]](https://huggingface.co/sberbank-ai/ruclip-vit-base-patch32-224) | [ruCLIP Base \[vit-base-patch16-224\]](https://huggingface.co/sberbank-ai/ruclip-vit-base-patch16-224) | [ruCLIP Large \[vit-large-patch14-224\]](https://huggingface.co/sberbank-ai/ruclip-vit-large-patch14-224) | [ruCLIP Base \[vit-base-patch32-384\]](https://huggingface.co/sberbank-ai/ruclip-vit-base-patch32-384) | [ruCLIP Large \[vit-large-patch14-336\]](https://huggingface.co/sberbank-ai/ruclip-vit-large-patch14-336) | [ruCLIP Base \[vit-base-patch16-384\]](https://huggingface.co/sberbank-ai/ruclip-vit-base-patch16-384) | CLIP \[vit-base-patch16-224\] original + [OPUS-MT](https://huggingface.co/Helsinki-NLP/opus-mt-ru-en) | CLIP \[vit-base-patch16-224\] original |
+| Dataset                       | [ruCLIP Base \[vit-base-patch32-224\]](https://huggingface.co/ai-forever/ruclip-vit-base-patch32-224) | [ruCLIP Base \[vit-base-patch16-224\]](https://huggingface.co/ai-forever/ruclip-vit-base-patch16-224) | [ruCLIP Large \[vit-large-patch14-224\]](https://huggingface.co/ai-forever/ruclip-vit-large-patch14-224) | [ruCLIP Base \[vit-base-patch32-384\]](https://huggingface.co/ai-forever/ruclip-vit-base-patch32-384) | [ruCLIP Large \[vit-large-patch14-336\]](https://huggingface.co/ai-forever/ruclip-vit-large-patch14-336) | [ruCLIP Base \[vit-base-patch16-384\]](https://huggingface.co/ai-forever/ruclip-vit-base-patch16-384) | CLIP \[vit-base-patch16-224\] original + [OPUS-MT](https://huggingface.co/Helsinki-NLP/opus-mt-ru-en) | CLIP \[vit-base-patch16-224\] original |
 | :----------------------------- | :------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------ | :--------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------ | :-------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------- | :-------------------------------------- |
 | Food101, acc                  | 0.505                                                                                                  | 0.552                                                                                                  | 0.597                                                                                                     | 0.642                                                                                                  | **0.712**💥                                                                                                 | 0.689                                                                                                   | 0.664                                                                                                 | 0.883                                  |
 | CIFAR10, acc                  | 0.818                                                                                                  | 0.810                                                                                                  | 0.878                                                                                                     | 0.862                                                                                                  | **0.906**💥                                                                                                 | 0.845                                                                                                   | 0.859                                                                                                 | 0.893                                  |
@@ -137,7 +137,7 @@ We have evaluated the performance zero-shot image classification on the followin
 
 And for linear-prob evaluation:
 
-| Dataset       | ruCLIP Base \[vit-base-patch32-224\] | ruCLIP Base \[vit-base-patch16-224\] | ruCLIP Large \[vit-large-patch14-224\] | ruCLIP Base \[vit-base-patch32-384\] | [ruCLIP Large \[vit-large-patch14-336\]](https://huggingface.co/sberbank-ai/ruclip-vit-large-patch14-336) | [ruCLIP Base \[vit-base-patch16-384\]](https://huggingface.co/sberbank-ai/ruclip-vit-base-patch16-384) | CLIP \[vit-base-patch16-224\] original |
+| Dataset       | ruCLIP Base \[vit-base-patch32-224\] | ruCLIP Base \[vit-base-patch16-224\] | ruCLIP Large \[vit-large-patch14-224\] | ruCLIP Base \[vit-base-patch32-384\] | [ruCLIP Large \[vit-large-patch14-336\]](https://huggingface.co/ai-forever/ruclip-vit-large-patch14-336) | [ruCLIP Base \[vit-base-patch16-384\]](https://huggingface.co/ai-forever/ruclip-vit-base-patch16-384) | CLIP \[vit-base-patch16-224\] original |
 | :------------- | :------------------------------------ | :------------------------------------ | :-------------------------------------- | :------------------------------------ | :------------------------------------------------ | :----------------------------------------------- | :-------------------------------------- |
 | Food101       | 0.765                                | 0.827                                | 0.840                                  | 0.851                                | **0.896**💥                                         | 0.890                                           | 0.901                                  |
 | CIFAR10       | 0.917                                | 0.922                                | 0.927                                  | 0.934                                | **0.943**💥                                         | 0.942                                           | 0.953                                  |
@@ -173,7 +173,7 @@ Also, we have created speed comparison based on CIFAR100 dataset using Nvidia-V1
 
 # Supported by
 
-[<img src="https://raw.githubusercontent.com/sberbank-ai/ru-dolph/master/pics/logo/airi-logo.png" height="50"/>](https://airi.net)
+[<img src="https://raw.githubusercontent.com/ai-forever/ru-dolph/master/pics/logo/airi-logo.png" height="50"/>](https://airi.net)
 
 ### Social Media
 
